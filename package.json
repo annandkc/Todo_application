@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"  // Example of other scripts you might have
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC",
@@ -11,3 +11,4 @@
     "express": "^4.19.2"
   }
 }
+
