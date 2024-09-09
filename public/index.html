@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TODO App By Annand</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #container {
+      width: 400px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    input[type="text"] {
+      width: calc(100% - 70px);
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 4px;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+      padding: 8px 0;
+    }
+
+    li:last-child {
+      border-bottom: none;
+    }
+
+    button.delete {
+      background-color: #dc3545;
+    }
+
+    button.delete:hover {
+      background-color: #bd2130;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>TODO App By Saikiran</h1>
+    <input type="text" id="todoInput" placeholder="Add a new task...">
+    <button onclick="addTodo()">Add Todo</button>
+    <ul id="todoList"></ul>
+  </div>
+
+  <script>
+    function fetchTodos() {
+      fetch('/todos')
+        .then(response => response.json())
+        .then(data => {
+          const todoList = document.getElementById('todoList');
+          todoList.innerHTML = '';
+          data.forEach((todo, index) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = todo;
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.className = 'delete';
+            deleteButton.onclick = function() {
+              deleteTodo(index);
+            };
+
+            listItem.appendChild(deleteButton);
+            todoList.appendChild(listItem);
+          });
+        });
+    }
+
+    function addTodo() {
+      const todoInput = document.getElementById('todoInput');
+      const todo = todoInput.value.trim();
+      if (todo !== '') {
+        fetch('/todos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ todo: todo })
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data.message);
+          todoInput.value = '';
+          fetchTodos();
+        });
+      }
+    }
+
+    function deleteTodo(index) {
+      fetch(`/todos/${index}`, {
+        method: 'DELETE'
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.message);
+        fetchTodos();
+      });
+    }
+
+    fetchTodos();
+  </script>
+</body>
+</html>
